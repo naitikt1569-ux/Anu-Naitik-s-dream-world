@@ -1,0 +1,454 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Anu & Naitik's Dream World ❤️✨</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <style>
+        * { box-sizing: border-box; font-family: 'Georgia', serif; }
+        body { margin: 0; padding: 0; background: #12000d; color: white; overflow-x: hidden; user-select: none; -webkit-tap-highlight-color: transparent; min-height: 100vh; }
+
+        /* PRELOADER SCREEN STYLING */
+        #preloader-screen {
+            position: fixed; inset: 0; background: #0d000a; z-index: 999999;
+            display: flex; flex-direction: column; justify-content: center; align-items: center;
+            transition: opacity 0.8s ease, visibility 0.8s; padding: 20px;
+        }
+        .preloader-heart {
+            font-size: 50px; animation: heartBeat 1.2s infinite ease-in-out; margin-bottom: 20px;
+            filter: drop-shadow(0 0 15px #ff4f87);
+        }
+        @keyframes heartBeat {
+            0% { transform: scale(1); }
+            14% { transform: scale(1.2); }
+            28% { transform: scale(1); }
+            42% { transform: scale(1.2); }
+            70% { transform: scale(1); }
+        }
+        .preloader-title { font-size: 18px; color: #ffd5e5; text-shadow: 0 0 15px #ff4f87; margin-bottom: 15px; text-transform: uppercase; letter-spacing: 2px; }
+        .progress-bar-container { width: 280px; height: 10px; background: rgba(255, 255, 255, 0.1); border-radius: 10px; overflow: hidden; border: 1px solid rgba(255, 79, 135, 0.5); box-shadow: 0 0 15px rgba(255, 79, 135, 0.3); }
+        .progress-bar-fill { width: 0%; height: 100%; background: linear-gradient(90deg, #ff4f87, #ff85a2); transition: width 0.3s ease; box-shadow: 0 0 10px #ff4f87; }
+        .progress-text { font-size: 13px; color: #ffb6c9; margin-top: 10px; font-weight: bold; }
+
+        .magic-bg {
+            position: fixed; inset: 0; z-index: 0; pointer-events: none;
+            background: radial-gradient(circle at 50% 20%, #4a0028 0%, #1a0012 60%, #0a0005 100%);
+        }
+        .falling-heart {
+            position: fixed; top: -50px; pointer-events: none; z-index: 999;
+            animation: fallHeart linear forwards; will-change: transform;
+        }
+        @keyframes fallHeart {
+            0% { transform: translateY(-50px) rotate(0deg) scale(0.5); opacity: 0; }
+            15% { opacity: 0.9; transform: translateY(15vh) rotate(45deg) scale(1); }
+            85% { opacity: 0.9; }
+            100% { transform: translateY(105vh) rotate(360deg) scale(1.3); opacity: 0; }
+        }
+
+        #fireworks-canvas { position: fixed; inset: 0; pointer-events: none; z-index: 99; }
+
+        .page-section {
+            display: none; width: 100vw; min-height: 100vh; flex-direction: column;
+            align-items: center; justify-content: center; padding: 30px 20px;
+            box-sizing: border-box; position: relative; z-index: 10;
+        }
+        .page-section.active { display: flex; animation: fadeIn 0.5s ease-in-out; }
+        @keyframes fadeIn { from { opacity: 0; transform: scale(0.98); } to { opacity: 1; transform: scale(1); } }
+
+        h1 { font-size: 26px; color: #ffd5e5; text-shadow: 0 0 25px #ff4f87, 0 0 10px #ff85a2; text-align: center; margin-bottom: 5px; text-transform: uppercase; letter-spacing: 1.5px; }
+        p { font-size: 14px; color: #ffe6f0; text-align: center; line-height: 1.5; margin-bottom: 20px; text-shadow: 0 2px 5px rgba(0,0,0,0.8); }
+
+        .contract-card { background: rgba(25, 0, 18, 0.85); border: 2.5px solid rgba(255, 79, 135, 0.8); border-radius: 30px; padding: 25px 20px; width: 100%; max-width: 440px; box-shadow: 0 0 45px rgba(255, 79, 135, 0.45); backdrop-filter: blur(18px); text-align: left; }
+        .contract-card h3 { text-align: center; color: #ffd5e5; margin-top: 0; font-size: 20px; text-shadow: 0 0 12px #ff4f87; letter-spacing: 1px; }
+        .contract-rules { font-size: 13px; line-height: 1.6; color: #ffe6f0; margin-bottom: 18px; max-height: 220px; overflow-y: auto; padding-right: 5px; }
+        .contract-rules li { margin-bottom: 10px; }
+
+        .sign-box { display: flex; flex-direction: column; gap: 10px; align-items: center; margin-top: 12px; border-top: 1px solid rgba(255,255,255,0.25); padding-top: 15px; }
+        input { padding: 12px 20px; border: 1.5px solid rgba(255, 182, 201, 0.7); border-radius: 35px; text-align: center; outline: none; width: 100%; font-size: 14px; background: rgba(255, 255, 255, 0.12); font-weight: bold; color: #fff; backdrop-filter: blur(8px); }
+        input::placeholder { color: rgba(255,255,255,0.7); font-weight: normal; }
+
+        button { background: linear-gradient(45deg, #ff4f87, #ff85a2); border: 0; color: white; padding: 14px 25px; border-radius: 35px; font-size: 15px; box-shadow: 0 0 20px rgba(255,79,135,0.7); cursor: pointer; font-weight: bold; width: 100%; font-family: 'Georgia', serif; }
+        button:active { transform: scale(0.95); }
+
+        #signed-stamp { display: none; text-align: center; margin-top: 12px; font-weight: bold; color: #00ffd5; font-size: 15px; text-shadow: 0 0 15px #00ffd5; }
+
+        .section-title { font-size: 22px; color: #ffd5e5; margin: 10px 0 8px 0; text-align: center; text-shadow: 0 0 15px #ff4f87; }
+        .bucket-grid { display: flex; flex-direction: column; gap: 12px; width: 100%; max-width: 440px; max-height: 65vh; overflow-y: auto; padding: 5px; }
+        .bucket-item { background: linear-gradient(135deg, rgba(40, 0, 25, 0.8), rgba(20, 0, 12, 0.9)); border: 2px solid rgba(255, 79, 135, 0.5); padding: 14px 18px; border-radius: 20px; display: flex; align-items: center; justify-content: space-between; cursor: pointer; backdrop-filter: blur(12px); box-shadow: 0 6px 20px rgba(0,0,0,0.6); }
+        .bucket-item:active { transform: scale(0.97); }
+        .bucket-text { font-size: 14px; text-align: left; font-weight: bold; color: #fff; }
+
+        .meter-card { background: rgba(25, 0, 18, 0.85); border: 2.5px solid rgba(255, 79, 135, 0.8); border-radius: 30px; padding: 30px 20px; width: 100%; max-width: 440px; text-align: center; backdrop-filter: blur(18px); box-shadow: 0 10px 35px rgba(0,0,0,0.6); }
+        .meter-result { font-size: 22px; font-weight: bold; color: #ffd5e5; margin-top: 15px; text-shadow: 0 0 20px #ff4f87; }
+
+        .page-nav-btns { display: flex; gap: 15px; width: 100%; max-width: 440px; margin-top: 20px; }
+        .nav-btn { background: rgba(255, 255, 255, 0.15); border: 1px solid rgba(255, 79, 135, 0.6); color: #fff; padding: 10px 20px; border-radius: 25px; cursor: pointer; font-weight: bold; font-size: 14px; flex: 1; }
+        .nav-btn:active { background: #ff4f87; }
+
+        #story-modal { position: fixed; inset: 0; background: rgba(8, 0, 5, 0.96); z-index: 5000; display: none; flex-direction: column; align-items: center; justify-content: flex-start; padding: 25px 20px; overflow-y: auto; backdrop-filter: blur(25px); }
+        .modal-close-btn { background: rgba(255,255,255,0.15); border: 2px solid #ff4f87; color: white; padding: 10px 25px; border-radius: 35px; margin-bottom: 15px; cursor: pointer; font-weight: bold; font-size: 14px; box-shadow: 0 0 20px #ff4f87; }
+        .modal-content-box { width: 100%; max-width: 440px; text-align: center; }
+        
+        .story-media-display { width: 100%; height: 320px; border-radius: 22px; overflow: hidden; border: 3px solid #ff4f87; box-shadow: 0 0 40px rgba(255,79,135,0.7); margin: 15px 0; background: #000; position: relative; }
+        .story-media-display img, .story-media-display video { width: 100%; height: 100%; object-fit: cover; object-position: center; display: none; background: #000; }
+        .story-media-display img.active, .story-media-display video.active { display: block; }
+
+        .sub-options-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 10px; width: 100%; margin-top: 10px; max-height: 45vh; overflow-y: auto; padding-right: 5px; }
+        .sub-btn { background: rgba(30, 0, 20, 0.9); border: 2px solid rgba(255,79,135,0.7); padding: 12px; border-radius: 16px; color: #ffd5e5; font-weight: bold; font-size: 13px; cursor: pointer; backdrop-filter: blur(10px); }
+        .sub-btn:active { transform: scale(0.95); }
+    </style>
+</head>
+<body>
+
+    <!-- PRELOADER SCREEN -->
+    <div id="preloader-screen">
+        <div class="preloader-heart">💖</div>
+        <div class="preloader-title">Loading Our Dreams...</div>
+        <div class="progress-bar-container">
+            <div class="progress-bar-fill" id="loader-bar"></div>
+        </div>
+        <div class="progress-text" id="loader-percent">0%</div>
+    </div>
+
+    <div class="magic-bg"></div>
+    <div id="fireworks-canvas"></div>
+
+    <div id="page-0" class="page-section active">
+        <h1>Official Love Contract 📜</h1>
+        <p>A legally binding document of our endless love!</p>
+        <div class="contract-card">
+            <h3>💍 OUR LOVE AGREEMENT 💍</h3>
+            <div class="contract-rules">
+                <ol>
+                    <li><b>Rule 1:</b> Second party (Anu) is strictly prohibited from staying angry for more than 10 minutes. First party (Naitik) has full rights to shower extra kisses! 🥰</li>
+                    <li><b>Rule 2:</b> Both parties agree to eat together, watch cute reels together, and share every single small detail of their day. 📱</li>
+                    <li><b>Rule 3:</b> No matter how old we get, hand-in-hand walks and forehead kisses remain mandatory for life! ♾️</li>
+                    <li><b>Rule 4:</b> Anu is officially declared the cutest, prettiest, and most precious human being in this entire universe! 👑</li>
+                    <li><b>Rule 5:</b> We promise to stick together through every thick and thin, fight every obstacle, and celebrate every single birthday hand-in-hand till our last breath! ❤️</li>
+                </ol>
+            </div>
+            <div class="sign-box" id="sign-section">
+                <input type="text" id="partner-name" placeholder="Type Your Name to Sign (Anu)...">
+                <button onclick="signContract()">Sign Contract & Seal With Love 💍</button>
+            </div>
+            <div id="signed-stamp">✨ CONTRACT OFFICIALLY SIGNED & SEALED FOREVER! ✨</div>
+        </div>
+        <div class="page-nav-btns">
+            <button class="nav-btn" onclick="switchPage(1)">Next: Bucket List ➔</button>
+        </div>
+    </div>
+
+    <div id="page-1" class="page-section">
+        <h2 class="section-title">✨ Our Dream Bucket List ✨</h2>
+        <p style="font-size: 13px; margin-top:-3px; color:#ffb6c9;">Tap any dream below to view memories! 👇</p>
+        
+        <div class="bucket-grid">
+            <div class="bucket-item" onclick="openStoryModal('trip')">
+                <span class="bucket-text">✈️ Our Dream Trips & Destinations</span><span>✨</span>
+            </div>
+            <div class="bucket-item" onclick="openStoryModal('drive')">
+                <span class="bucket-text">🚗 A long drive at 2 AM with our playlist</span><span>✨</span>
+            </div>
+            <div class="bucket-item" onclick="openStoryModal('food')">
+                <span class="bucket-text">🍜 Midnight Food Dates & Cravings</span><span>✨</span>
+            </div>
+            <div class="bucket-item" onclick="openStoryModal('home')">
+                <span class="bucket-text">🏡 Building Our Cozy Dream Home</span><span>✨</span>
+            </div>
+            <div class="bucket-item" onclick="openStoryModal('family')">
+                <span class="bucket-text">🍼 Our Little Family (Naiansh & Siya) + Trips</span><span>✨</span>
+            </div>
+            <div class="bucket-item" onclick="openStoryModal('old')">
+                <span class="bucket-text">👴👵 Holding Hands When We Grow Old</span><span>✨</span>
+            </div>
+        </div>
+        <div class="page-nav-btns">
+            <button class="nav-btn" onclick="switchPage(0)">⬅️ Back</button>
+            <button class="nav-btn" onclick="switchPage(2)">Next: Meter ➔</button>
+        </div>
+    </div>
+
+    <div id="page-2" class="page-section">
+        <h1>Compatibility Meter 💖</h1>
+        <p>Let's check our cosmic alignment frequency!</p>
+        <div class="meter-card">
+            <h3 style="margin-top:0; color:#ffd5e5;">💕 Couple Compatibility Meter</h3>
+            <p style="font-size: 13px; color:#ffb6c9;">Click the button below to test our vibe frequency:</p>
+            <button onclick="calculateLove()">Check Love Percentage ⚡</button>
+            <div id="meter-output" class="meter-result"></div>
+        </div>
+        <div class="page-nav-btns">
+            <button class="nav-btn" onclick="switchPage(1)">⬅️ Back to Bucket List</button>
+        </div>
+    </div>
+
+    <div id="story-modal">
+        <button class="modal-close-btn" onclick="closeStoryModal()">✕ Back</button>
+        <div class="modal-content-box" id="modal-body-content"></div>
+    </div>
+
+    <script>
+        // FULL LIST OF ALL MEDIA FILES TO PRELOAD
+        const allMediaFiles = [
+            "drive_2am_img1.jpg", "drive_2am_img2.jpg", "drive_2am_img3.jpg", "drive_2am_vid.mp4",
+            "food_dates_img1.jpg", "food_dates_img2.jpg", "food_dates_img3.jpg", "food_dates_vid.mp4",
+            "dream_home_img1.jpg", "dream_home_img2.jpg", "dream_home_img3.jpg", "dream_home_vid.mp4",
+            "growing_old_img1.jpg", "growing_old_img2.jpg", "growing_old_img3.jpg", "growing_old_vid.mp4",
+            "trip_mountains_img1.jpg", "trip_mountains_img2.jpg", "trip_mountains_img3.jpg", "trip_mountains_vid.mp4",
+            "trip_beach_img1.jpg", "trip_beach_img2.jpg", "trip_beach_img3.jpg", "trip_beach_vid.mp4",
+            "trip_royal_img1.jpg", "trip_royal_img2.jpg", "trip_royal_img3.jpg", "trip_royal_vid.mp4",
+            "trip_forest_img1.jpg", "trip_forest_img2.jpg", "trip_forest_img3.jpg", "trip_forest_vid.mp4",
+            "trip_city_img1.jpg", "trip_city_img2.jpg", "trip_city_img3.jpg", "trip_city_vid.mp4",
+            "trip_paris_img1.jpg", "trip_paris_img2.jpg", "trip_paris_img3.jpg", "trip_paris_vid.mp4",
+            "family_hills_img1.jpg", "family_hills_img2.jpg", "family_hills_img3.jpg", "family_hills_vid.mp4",
+            "family_beachtrip_img1.jpg", "family_beachtrip_img2.jpg", "family_beachtrip_img3.jpg", "family_beachtrip_vid.mp4",
+            "family_heritage_img1.jpg", "family_heritage_img2.jpg", "family_heritage_img3.jpg", "family_heritage_vid.mp4",
+            "naiansh_steps_img1.jpg", "naiansh_steps_img2.jpg", "naiansh_steps_img3.jpg", "naiansh_steps_vid.mp4",
+            "siya_moments_img1.jpg", "siya_moments_img2.jpg", "siya_moments_img3.jpg", "siya_moments_vid.mp4",
+            "family_picnic_img1.jpg", "family_picnic_img2.jpg", "family_picnic_img3.jpg", "family_picnic_vid.mp4",
+            "family_cuddles_img1.jpg", "family_cuddles_img2.jpg", "family_cuddles_img3.jpg", "family_cuddles_vid.mp4",
+            "family_birthday_img1.jpg", "family_birthday_img2.jpg", "family_birthday_img3.jpg", "family_birthday_vid.mp4",
+            "family_world_img1.jpg", "family_world_img2.jpg", "family_world_img3.jpg", "family_world_vid.mp4"
+        ];
+
+        let loadedMediaCount = 0;
+
+        function startPreloadingEngine() {
+            const bar = document.getElementById("loader-bar");
+            const txt = document.getElementById("loader-percent");
+            const screen = document.getElementById("preloader-screen");
+
+            allMediaFiles.forEach((file) => {
+                const ext = file.split('.').pop().toLowerCase();
+                
+                if (ext === 'mp4' || ext === 'webm') {
+                    const video = document.createElement('video');
+                    video.onloadeddata = updateProgress;
+                    video.onerror = updateProgress; // Fallback so it doesn't get stuck
+                    video.src = file;
+                } else {
+                    const img = new Image();
+                    img.onload = updateProgress;
+                    img.onerror = updateProgress; // Fallback
+                    img.src = file;
+                }
+            });
+
+            function updateProgress() {
+                loadedMediaCount++;
+                let pct = Math.floor((loadedMediaCount / allMediaFiles.length) * 100);
+                if (pct > 100) pct = 100;
+
+                bar.style.width = pct + "%";
+                txt.innerText = pct + "%";
+
+                if (loadedMediaCount >= allMediaFiles.length) {
+                    setTimeout(() => {
+                        screen.style.opacity = "0";
+                        screen.style.visibility = "hidden";
+                    }, 500);
+                }
+            }
+        }
+
+        window.addEventListener("load", startPreloadingEngine);
+
+        function spawnHeartRain() {
+            const h = document.createElement("div");
+            h.className = "falling-heart";
+            h.innerText = ["💖","✨","🌸","💕","❤️","💘"][Math.floor(Math.random()*6)];
+            h.style.left = Math.random() * 100 + "vw";
+            h.style.fontSize = Math.floor(Math.random() * 20 + 15) + "px";
+            h.style.animationDuration = (Math.random() * 3 + 3) + "s";
+            document.body.appendChild(h);
+            setTimeout(() => h.remove(), 6000);
+        }
+        setInterval(spawnHeartRain, 300);
+
+        function signContract() {
+            const nameInput = document.getElementById("partner-name").value.trim();
+            if(nameInput === "") {
+                alert("Pehle apna naam toh likho meri jaan! 🤫");
+                return;
+            }
+            document.getElementById("sign-section").style.display = "none";
+            document.getElementById("signed-stamp").style.display = "block";
+            triggerConfettiExplosion();
+            alert(`Yayy! ${nameInput} has officially signed the contract with Naitik! Forever locked! ❤️`);
+        }
+
+        function switchPage(pageIndex) {
+            document.querySelectorAll('.page-section').forEach((page, idx) => {
+                page.classList.remove('active');
+                if(idx === pageIndex) {
+                    page.classList.add('active');
+                }
+            });
+            window.scrollTo(0, 0);
+        }
+
+        const storyData = {
+            drive: { title: "🚗 2 AM Long Drive", media: ["drive_2am_img1.jpg", "drive_2am_img2.jpg", "drive_2am_img3.jpg", "drive_2am_vid.mp4"] },
+            food: { title: "🍜 Midnight Food Dates", media: ["food_dates_img1.jpg", "food_dates_img2.jpg", "food_dates_img3.jpg", "food_dates_vid.mp4"] },
+            home: { title: "🏡 Our Cozy Dream Home", media: ["dream_home_img1.jpg", "dream_home_img2.jpg", "dream_home_img3.jpg", "dream_home_vid.mp4"] },
+            old: { title: "👴👵 Growing Old Together", media: ["growing_old_img1.jpg", "growing_old_img2.jpg", "growing_old_img3.jpg", "growing_old_vid.mp4"] }
+        };
+
+        const tripDestinations = [
+            { name: "🏔️ Snowy Mountains", media: ["trip_mountains_img1.jpg", "trip_mountains_img2.jpg", "trip_mountains_img3.jpg", "trip_mountains_vid.mp4"] },
+            { name: "🇨🇭 Our Switzerland Trip", media: ["trip_beach_img1.jpg", "trip_beach_img2.jpg", "trip_beach_img3.jpg", "trip_beach_vid.mp4"] },
+            { name: "🏰 Royal Heritage City", media: ["trip_royal_img1.jpg", "trip_royal_img2.jpg", "trip_royal_img3.jpg", "trip_royal_vid.mp4"] },
+            { name: "🌲 Forest Cabin", media: ["trip_forest_img1.jpg", "trip_forest_img2.jpg", "trip_forest_img3.jpg", "trip_forest_vid.mp4"] },
+            { name: "🌃 City Lights Dinner", media: ["trip_city_img1.jpg", "trip_city_img2.jpg", "trip_city_img3.jpg", "trip_city_vid.mp4"] },
+            { name: "🌸 Paris Dream Trip", media: ["trip_paris_img1.jpg", "trip_paris_img2.jpg", "trip_paris_img3.jpg", "trip_paris_vid.mp4"] }
+        ];
+
+        const familyDestinations = [
+            { name: "✈️ Family Hills Vacation", media: ["family_hills_img1.jpg", "family_hills_img2.jpg", "family_hills_img3.jpg", "family_hills_vid.mp4"] },
+            { name: "🌊 Santorini Island, Greece Trip", media: ["family_beachtrip_img1.jpg", "family_beachtrip_img2.jpg", "family_beachtrip_img3.jpg", "family_beachtrip_vid.mp4"] },
+            { name: "🏰 Japan Family Tour", media: ["family_heritage_img1.jpg", "family_heritage_img2.jpg", "family_heritage_img3.jpg", "family_heritage_vid.mp4"] },
+            { name: "👶 Naiansh's First Steps", media: ["naiansh_steps_img1.jpg", "naiansh_steps_img2.jpg", "naiansh_steps_img3.jpg", "naiansh_steps_vid.mp4"] },
+            { name: "🌸 Siya's Special Moments", media: ["siya_moments_img1.jpg", "siya_moments_img2.jpg", "siya_moments_img3.jpg", "siya_moments_vid.mp4"] },
+            { name: "👨‍👩‍👧‍👦 Quebec City, Canada Trip", media: ["family_picnic_img1.jpg", "family_picnic_img2.jpg", "family_picnic_img3.jpg", "family_picnic_vid.mp4"] },
+            { name: "✨ Our Paris Family Trip", media: ["family_cuddles_img1.jpg", "family_cuddles_img2.jpg", "family_cuddles_img3.jpg", "family_cuddles_vid.mp4"] },
+            { name: "🎂 Kids' Birthday Bash", media: ["family_birthday_img1.jpg", "family_birthday_img2.jpg", "family_birthday_img3.jpg", "family_birthday_vid.mp4"] },
+            { name: "🏡 Our Complete Happy World", media: ["family_world_img1.jpg", "family_world_img2.jpg", "family_world_img3.jpg", "family_world_vid.mp4"] }
+        ];
+
+        let slideshowTimer = null;
+
+        function openStoryModal(type) {
+            const modal = document.getElementById("story-modal");
+            const content = document.getElementById("modal-body-content");
+            modal.style.display = "flex";
+            content.innerHTML = "";
+            if(slideshowTimer) clearInterval(slideshowTimer);
+
+            if (type === 'trip') {
+                let html = `
+                    <h2 style="color:#ffd5e5; margin-top:0;">✈️ Our Dream Trips</h2>
+                    <p style="font-size:13px; color:#ffb6c9; margin-bottom:10px;">Tap any destination to watch our story!</p>
+                    <div class="sub-options-grid">
+                `;
+                tripDestinations.forEach((item) => {
+                    html += `<button class="sub-btn" onclick='loadMultiMediaSlideshow(${JSON.stringify(item.media)}, "${item.name}")'>${item.name}</button>`;
+                });
+                html += `</div><div id="sub-story-display" style="margin-top:15px;"></div>`;
+                content.innerHTML = html;
+            } else if (type === 'family') {
+                let html = `
+                    <h2 style="color:#ffd5e5; margin-top:0;">🍼 Family & Trips</h2>
+                    <p style="font-size:13px; color:#ffb6c9; margin-bottom:10px;">Tap any family memory or trip!</p>
+                    <div class="sub-options-grid">
+                `;
+                familyDestinations.forEach((item) => {
+                    html += `<button class="sub-btn" onclick='loadMultiMediaSlideshow(${JSON.stringify(item.media)}, "${item.name}")'>${item.name}</button>`;
+                });
+                html += `</div><div id="sub-story-display" style="margin-top:15px;"></div>`;
+                content.innerHTML = html;
+            } else {
+                const data = storyData[type];
+                content.innerHTML = `
+                    <h2 style="color:#ffd5e5; margin-top:0;">${data.title}</h2>
+                    <div class="story-media-display" id="media-container"></div>
+                `;
+                startSlideshow(data.media, "media-container");
+            }
+            triggerConfettiExplosion();
+        }
+
+        function loadMultiMediaSlideshow(mediaArray, title) {
+            const display = document.getElementById("sub-story-display");
+            display.innerHTML = `
+                <div style="animation:fadeIn 0.3s;">
+                    <h3 style="color:#ffd5e5; margin:0 0 8px 0; font-size:15px;">${title}</h3>
+                    <div class="story-media-display" style="height:240px; margin:0;" id="sub-media-container"></div>
+                </div>
+            `;
+            startSlideshow(mediaArray, "sub-media-container");
+            triggerConfettiExplosion();
+        }
+
+        function startSlideshow(mediaArray, containerId) {
+            if(slideshowTimer) clearInterval(slideshowTimer);
+            const container = document.getElementById(containerId);
+            if(!container) return;
+            container.innerHTML = "";
+
+            mediaArray.forEach((file, index) => {
+                const ext = file.split('.').pop().toLowerCase();
+                if (ext === 'mp4' || ext === 'webm') {
+                    const vid = document.createElement('video');
+                    vid.src = file;
+                    vid.autoplay = true;
+                    vid.loop = true;
+                    vid.playsInline = true;
+                    vid.className = index === 0 ? 'active' : '';
+                    container.appendChild(vid);
+                } else {
+                    const img = document.createElement('img');
+                    img.src = file;
+                    img.className = index === 0 ? 'active' : '';
+                    container.appendChild(img);
+                }
+            });
+
+            let currentIndex = 0;
+            const elements = container.children;
+            if(elements.length > 1) {
+                slideshowTimer = setInterval(() => {
+                    elements[currentIndex].classList.remove('active');
+                    if(elements[currentIndex].tagName === 'VIDEO') elements[currentIndex].pause();
+                    
+                    currentIndex = (currentIndex + 1) % elements.length;
+                    
+                    elements[currentIndex].classList.add('active');
+                    if(elements[currentIndex].tagName === 'VIDEO') elements[currentIndex].play().catch(e => {});
+                }, 4000);
+            }
+        }
+
+        function closeStoryModal() {
+            if(slideshowTimer) clearInterval(slideshowTimer);
+            document.getElementById("story-modal").style.display = "none";
+        }
+
+        function calculateLove() {
+            const output = document.getElementById("meter-output");
+            output.innerHTML = "Calculating cosmic stars... ✨";
+            setTimeout(() => {
+                output.innerHTML = "💖 1000% MATCHED! (Infinity & Beyond! ♾️)";
+                triggerConfettiExplosion();
+            }, 800);
+        }
+
+        const fwCanvas = document.getElementById("fireworks-canvas");
+        const fwCtx = fwCanvas.getContext("2d");
+        let confettiArray = [];
+        function resizeFwCanvas() { fwCanvas.width = window.innerWidth; fwCanvas.height = window.innerHeight; }
+        window.addEventListener('resize', resizeFwCanvas); resizeFwCanvas();
+
+        function triggerConfettiExplosion() {
+            const colors = ["#ff4f87", "#ffb6c9", "#ffd700", "#00e5ff", "#9d4edd"];
+            for (let i = 0; i < 60; i++) {
+                confettiArray.push({ x: window.innerWidth / 2, y: window.innerHeight / 2, vx: (Math.random() - 0.5) * 12, vy: (Math.random() - 0.8) * 14, size: Math.random() * 6 + 4, color: colors[Math.floor(Math.random() * colors.length)], rotation: Math.random() * 360, rSpeed: Math.random() * 4 - 2 });
+            }
+            if(confettiArray.length <= 60) renderConfetti();
+        }
+
+        function renderConfetti() {
+            fwCtx.clearRect(0, 0, fwCanvas.width, fwCanvas.height);
+            confettiArray.forEach((c, index) => {
+                c.x += c.vx; c.y += c.vy; c.vy += 0.25; c.rotation += c.rSpeed;
+                if (c.y > fwCanvas.height) confettiArray.splice(index, 1);
+                else {
+                    fwCtx.save(); fwCtx.translate(c.x, c.y); fwCtx.rotate(c.rotation * Math.PI / 180);
+                    fwCtx.fillStyle = c.color; fwCtx.fillRect(-c.size/2, -c.size/2, c.size, c.size);
+                    fwCtx.restore();
+                }
+            });
+            if (confettiArray.length > 0) requestAnimationFrame(renderConfetti);
+        }
+    </script>
+</body>
+</html>
